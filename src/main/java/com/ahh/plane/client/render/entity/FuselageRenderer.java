@@ -10,17 +10,18 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.rendertype.RenderSetup;
 import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.ARGB;
+import org.jspecify.annotations.NonNull;
 
 public class FuselageRenderer extends EntityRenderer<Fuselage, FuselageRenderState> {
+    public static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(AhhPlaneMod.MOD_ID,  "textures/entity/null.png");
     private static final RenderType SOLID = RenderType.create(
             "solid_no_texture",
-            RenderSetup.builder(RenderPipelines.DEBUG_QUADS)
+            RenderSetup.builder(RenderPipelines.SOLID_BLOCK)
                     .useLightmap()
                     .setOutline(RenderSetup.OutlineProperty.NONE)
+                    .withTexture("Sampler0", TEXTURE)
                     .createRenderSetup()
     );
 
@@ -29,30 +30,9 @@ public class FuselageRenderer extends EntityRenderer<Fuselage, FuselageRenderSta
     }
 
     @Override
-    public void submit(FuselageRenderState entityRenderState, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState cameraRenderState) {
+    public void submit(FuselageRenderState entityRenderState, PoseStack poseStack, @NonNull SubmitNodeCollector submitNodeCollector, @NonNull CameraRenderState cameraRenderState) {
         poseStack.pushPose();
-        submitNodeCollector.submitCustomGeometry(
-                poseStack,
-                SOLID,
-                (pose, consumer) -> {
-                    consumer.addVertex(pose, -2, 0, -5.5F)
-                            .setColor(0xFFFFFFFF)
-                            .setLight(entityRenderState.lightCoords)
-                            .setNormal(pose, 0, 1, 0);
-                    consumer.addVertex(pose, -2, 0, 5.5F)
-                            .setColor(0xFFFFFFFF)
-                            .setLight(entityRenderState.lightCoords)
-                            .setNormal(pose, 0, 1, 0);
-                    consumer.addVertex(pose, 2, 0, 5.5F)
-                            .setColor(0xFFFFFFFF)
-                            .setLight(entityRenderState.lightCoords)
-                            .setNormal(pose, 0, 1, 0);
-                    consumer.addVertex(pose, 2, 0, -5.5F)
-                            .setColor(0xFFFFFFFF)
-                            .setLight(entityRenderState.lightCoords)
-                            .setNormal(pose, 0, 1, 0);
-                }
-        );
+        renderBelly(entityRenderState, poseStack, submitNodeCollector);
         poseStack.popPose();
 
         super.submit(entityRenderState, poseStack, submitNodeCollector, cameraRenderState);
@@ -66,6 +46,68 @@ public class FuselageRenderer extends EntityRenderer<Fuselage, FuselageRenderSta
     @Override
     public void extractRenderState(Fuselage entity, FuselageRenderState entityRenderState, float f) {
         super.extractRenderState(entity, entityRenderState, f);
+    }
 
+    private static void renderBelly(FuselageRenderState entityRenderState, PoseStack poseStack, SubmitNodeCollector submitNodeCollector) {
+        submitNodeCollector.submitCustomGeometry( // bottom
+                poseStack,
+                SOLID,
+                (pose, consumer) -> {
+                    consumer.addVertex(pose, -2, 0, -5.5F).setColor(0xFFFFFFFF).setLight(entityRenderState.lightCoords).setNormal(pose, 0, -1, 0);
+                    consumer.addVertex(pose, -2, 0, 5.5F).setColor(0xFFFFFFFF).setLight(entityRenderState.lightCoords).setNormal(pose, 0, -1, 0);
+                    consumer.addVertex(pose, 2, 0, 5.5F).setColor(0xFFFFFFFF).setLight(entityRenderState.lightCoords).setNormal(pose, 0, -1, 0);
+                    consumer.addVertex(pose, 2, 0, -5.5F).setColor(0xFFFFFFFF).setLight(entityRenderState.lightCoords).setNormal(pose, 0, -1, 0);
+                }
+        );
+        submitNodeCollector.submitCustomGeometry( // up
+                poseStack,
+                SOLID,
+                (pose, consumer) -> {
+                    consumer.addVertex(pose, -2, 0.2F, -5.5F).setColor(0xFFFFFFFF).setLight(entityRenderState.lightCoords).setNormal(pose, 0, 1, 0);
+                    consumer.addVertex(pose, -2, 0.2F, 5.5F).setColor(0xFFFFFFFF).setLight(entityRenderState.lightCoords).setNormal(pose, 0, 1, 0);
+                    consumer.addVertex(pose, 2, 0.2F, 5.5F).setColor(0xFFFFFFFF).setLight(entityRenderState.lightCoords).setNormal(pose, 0, 1, 0);
+                    consumer.addVertex(pose, 2, 0.2F, -5.5F).setColor(0xFFFFFFFF).setLight(entityRenderState.lightCoords).setNormal(pose, 0, 1, 0);
+                }
+        );
+        submitNodeCollector.submitCustomGeometry( // left
+                poseStack,
+                SOLID,
+                (pose, consumer) -> {
+                    consumer.addVertex(pose, -2, 0F, -5.5F).setColor(0xFFFFFFFF).setLight(entityRenderState.lightCoords).setNormal(pose, -1, 0, 0);
+                    consumer.addVertex(pose, -2, 0F, 5.5F).setColor(0xFFFFFFFF).setLight(entityRenderState.lightCoords).setNormal(pose, -1, 0, 0);
+                    consumer.addVertex(pose, -2, 0.2F, 5.5F).setColor(0xFFFFFFFF).setLight(entityRenderState.lightCoords).setNormal(pose, -1, 0, 0);
+                    consumer.addVertex(pose, -2, 0.2F, -5.5F).setColor(0xFFFFFFFF).setLight(entityRenderState.lightCoords).setNormal(pose, -1, 0, 0);
+                }
+        );
+        submitNodeCollector.submitCustomGeometry( // right
+                poseStack,
+                SOLID,
+                (pose, consumer) -> {
+                    consumer.addVertex(pose, 2, 0F, -5.5F).setColor(0xFFFFFFFF).setLight(entityRenderState.lightCoords).setNormal(pose, 1, 0, 0);
+                    consumer.addVertex(pose, 2, 0F, 5.5F).setColor(0xFFFFFFFF).setLight(entityRenderState.lightCoords).setNormal(pose, 1, 0, 0);
+                    consumer.addVertex(pose, 2, 0.2F, 5.5F).setColor(0xFFFFFFFF).setLight(entityRenderState.lightCoords).setNormal(pose, 1, 0, 0);
+                    consumer.addVertex(pose, 2, 0.2F, -5.5F).setColor(0xFFFFFFFF).setLight(entityRenderState.lightCoords).setNormal(pose, 1, 0, 0);
+                }
+        );
+        submitNodeCollector.submitCustomGeometry( // forward
+                poseStack,
+                SOLID,
+                (pose, consumer) -> {
+                    consumer.addVertex(pose, -2, 0F, 5.5F).setColor(0xFFFFFFFF).setLight(entityRenderState.lightCoords).setNormal(pose, 0, 0, 1);
+                    consumer.addVertex(pose, -2, 0.2F, 5.5F).setColor(0xFFFFFFFF).setLight(entityRenderState.lightCoords).setNormal(pose, 0, 0, 1);
+                    consumer.addVertex(pose, 2, 0.2F, 5.5F).setColor(0xFFFFFFFF).setLight(entityRenderState.lightCoords).setNormal(pose, 0, 0, 1);
+                    consumer.addVertex(pose, 2, 0F, 5.5F).setColor(0xFFFFFFFF).setLight(entityRenderState.lightCoords).setNormal(pose, 0, 0, 1);
+                }
+        );
+        submitNodeCollector.submitCustomGeometry( // back
+                poseStack,
+                SOLID,
+                (pose, consumer) -> {
+                    consumer.addVertex(pose, -2, 0F, -5.5F).setColor(0xFFFFFFFF).setLight(entityRenderState.lightCoords).setNormal(pose, 0, 0, -1);
+                    consumer.addVertex(pose, -2, 0.2F, -5.5F).setColor(0xFFFFFFFF).setLight(entityRenderState.lightCoords).setNormal(pose, 0, 0, -1);
+                    consumer.addVertex(pose, 2, 0.2F, -5.5F).setColor(0xFFFFFFFF).setLight(entityRenderState.lightCoords).setNormal(pose, 0, 0, -1);
+                    consumer.addVertex(pose, 2, 0F, -5.5F).setColor(0xFFFFFFFF).setLight(entityRenderState.lightCoords).setNormal(pose, 0, 0, -1);
+                }
+        );
     }
 }
