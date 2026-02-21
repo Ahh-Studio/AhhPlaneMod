@@ -1,6 +1,7 @@
 package com.ahh.plane.entity;
 
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.vehicle.VehicleEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -13,6 +14,22 @@ public class Fuselage extends VehicleEntity {
     public Fuselage(EntityType<?> entityType, Level level) {
         super(entityType, level);
         this.blocksBuilding = true;
+        this.setXRot(30);
+        this.setYRot(45);
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        this.handlePortal();
+        this.applyGravity();
+        this.move(MoverType.SELF, this.getDeltaMovement());
+        if (this.onGround()) {
+            this.setDeltaMovement(this.getDeltaMovement().multiply(1, -0.5, 1));
+        }
+        this.setDeltaMovement(this.getDeltaMovement().scale(0.95));
+        this.applyEffectsFromBlocks();
+        this.updateInWaterStateAndDoFluidPushing();
     }
 
     @Override
@@ -28,5 +45,10 @@ public class Fuselage extends VehicleEntity {
     @Override
     protected void addAdditionalSaveData(ValueOutput valueOutput) {
 
+    }
+
+    @Override
+    protected double getDefaultGravity() {
+        return 0.1;
     }
 }
