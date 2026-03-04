@@ -15,7 +15,7 @@ public class ModEntityTypes {
             "fuselage",
             EntityType.Builder.of(Fuselage::new, MobCategory.MISC)
                     .noLootTable()
-                    .sized(11.0F, 4F)
+                    .sized(11.0F, 5F)
                     .eyeHeight(3.0F)
                     .clientTrackingRange(10)
     );

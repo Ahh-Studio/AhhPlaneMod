@@ -1,6 +1,7 @@
 package com.ahh.plane.entity;
 
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.InterpolationHandler;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.vehicle.VehicleEntity;
 import net.minecraft.world.item.Item;
@@ -11,16 +12,18 @@ import net.minecraft.world.level.storage.ValueOutput;
 import org.jspecify.annotations.NonNull;
 
 public class Fuselage extends VehicleEntity {
+    private final InterpolationHandler interpolation = new InterpolationHandler(this, 3);
+    public float landingGearDownPercentage = 0.0F;
+
     public Fuselage(EntityType<?> entityType, Level level) {
         super(entityType, level);
         this.blocksBuilding = true;
-        this.setXRot(30);
-        this.setYRot(45);
     }
 
     @Override
     public void tick() {
         super.tick();
+        this.interpolation.interpolate();
         this.handlePortal();
         this.applyGravity();
         this.move(MoverType.SELF, this.getDeltaMovement());
@@ -51,4 +54,11 @@ public class Fuselage extends VehicleEntity {
     protected double getDefaultGravity() {
         return 0.1;
     }
+
+    @Override
+    public InterpolationHandler getInterpolation() {
+        return this.interpolation;
+    }
+
+
 }
