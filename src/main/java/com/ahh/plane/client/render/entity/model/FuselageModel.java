@@ -31,16 +31,16 @@ public class FuselageModel extends EntityModel<FuselageRenderState> {
         // Landing Gear
         partDefinition.addOrReplaceChild("gear1",
                 CubeListBuilder.create()
-                        .texOffs(0, 0).addBox(-6, -16, -3, 5, 8, 8)
-                        .texOffs(26, 0).addBox(3, -16, -3, 5, 8, 8)
-                        .texOffs(52, 0).addBox(-1, -14, -1, 4, 14, 4),
-                PartPose.offset(-40, 16, 51));
+                        .texOffs(0, 0).addBox(-6, -16, 13, 5, 8, 8)
+                        .texOffs(26, 0).addBox(3, -16, 13, 5, 8, 8)
+                        .texOffs(52, 0).addBox(-1, -14, 15, 4, 14, 4),
+                PartPose.offset(-40, 16, 67));
         partDefinition.addOrReplaceChild("gear2",
                 CubeListBuilder.create()
-                        .texOffs(0, 16).addBox(-6, -16, -3, 5, 8, 8)
-                        .texOffs(26, 16).addBox(3, -16, -3, 5, 8, 8)
-                        .texOffs(52, 18).addBox(-1, -14, -1, 4, 14, 4),
-                PartPose.offset(40, 16, 51));
+                        .texOffs(0, 16).addBox(-6, -16, 13, 5, 8, 8)
+                        .texOffs(26, 16).addBox(3, -16, 13, 5, 8, 8)
+                        .texOffs(52, 18).addBox(-1, -14, 15, 4, 14, 4),
+                PartPose.offset(40, 16, 67));
         partDefinition.addOrReplaceChild("gear3",
                 CubeListBuilder.create()
                         .texOffs(0, 32).addBox(-4.5F, -16, -1, 3, 5, 5)
